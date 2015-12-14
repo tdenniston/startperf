@@ -1,3 +1,6 @@
+example: example.c
+	$(CC) -std=c99 -o $@ $^ -lm -D_POSIX_SOURCE
+
 check: test.c
 	$(CC) -o test $^
 	@$(RM) *.testexe
@@ -10,4 +13,4 @@ check: test.c
 	@$(RM) *.testexe
 
 clean:
-	$(RM) test *.testexe
+	$(RM) test *.testexe example
