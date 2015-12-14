@@ -24,12 +24,15 @@ THE SOFTWARE.
 #define __STARTPERF_H__
 
 #include <assert.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
+static pid_t startperf_child_pid = -1;
 static char **startperf_getcmd(const char *cmdstr, pid_t parent_pid);
 
 /*
@@ -65,6 +68,24 @@ static void startperf(const char *cmdstr) {
         int retval = execvp(cmd[0], cmd);
         perror("Failed to exec");
         exit(1);
+    } else {
+        startperf_child_pid = pid;
+    }
+}
+
+/*
+ * Sends SIGINT to the child process and waits for it to terminate.
+ */
+static void stopperf() {
+    if (startperf_child_pid == -1) return;
+    int retval = kill(startperf_child_pid, SIGINT);
+    if (retval == 0) {
+        pid_t p = waitpid(startperf_child_pid, NULL, 0);
+        if (p == -1) {
+            perror("waitpid");
+        }
+    } else {
+        perror("Failed to send SIGTERM");
     }
 }
 
