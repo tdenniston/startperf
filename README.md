@@ -5,6 +5,7 @@ Utility to programmatically start a command detached from its parent process. `s
 
 ## Example
 
+```c
     #include "startperf.h"
     #define N (1024*1024)
     
@@ -32,3 +33,4 @@ Utility to programmatically start a command detached from its parent process. `s
         free(data);
         return 0;
     }
+```
